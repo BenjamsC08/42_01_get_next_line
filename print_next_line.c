@@ -1,54 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   print_next_line.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: benjamsc <benjamsc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/12 22:47:35 by benjamsc          #+#    #+#             */
-/*   Updated: 2024/11/20 15:21:17 by benjamsc         ###   ########.fr       */
+/*   Created: 2024/11/20 12:09:50 by benjamsc          #+#    #+#             */
+/*   Updated: 2024/11/20 12:58:19 by benjamsc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <fcntl.h>
 
-int	*count_char(int fd)
+void	extract_line(int fd)
 {
-	char			buff[BUFF_SIZE];
-	int				i;
-	int				*tab_pos;
-	int				*tab;
+	char		*buff;
+	int			l;
+	static int	n = 1;
 
-	tab_pos = (int *)ft_nalloc(BUFF_SIZE, sizeof(int));
-	if (! tab_pos)
-		return (NULL);
-	tab = tab_pos;
 	i = 0;
+	l = 0;
+	buff = malloc(4096);
 	read(fd, buff, sizeof(buff));
-	while (buff[i])
+	while (l != n || ! *buff)
 	{
-		if (buff[i] == '\n')
-			*(tab++) = i;
-		i++;
+		if (*buff == '\n')
+			l++;
+		if (l == n - 1)
+			write(1, buff, 1);
+		buff++;
 	}
-	*(tab) = i;
-	return (tab_pos);
-}
-
-char	*get_next_line(int fd)
-{
-	static int	n = 0;
-	int			*tab;
-
-	tab = count_char(fd);
-	if (tab[n + 1] == -1)
-	{
-		free(tab);
-		return (NULL);
-	}
-	free(tab);
 	n++;
-	return (NULL);
+	free(buff);
+	return ;
 }
 
 int	main(void)
@@ -56,17 +44,16 @@ int	main(void)
 	const char	*file_name = "test.txt";
 	int			fd;
 
-	fd = open(file_name, O_RDONLY);
+	fd = open(file_name, O_RDWR);
 	if (fd == -1)
 	{
 		printf("\nError Opening File!!\n");
 		return (1);
 	}
-	get_next_line(fd);
-	get_next_line(fd);
-	get_next_line(fd);
-	get_next_line(fd);
-	get_next_line(fd);
-	get_next_line(fd);
+	extract_line(fd);
+	extract_line(fd);
+	extract_line(fd);
+	extract_line(fd);
+	extract_line(fd);
 	close(fd);
 }
