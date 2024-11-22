@@ -22,5 +22,6 @@
 # include <stdint.h>
 
 void	*ft_nalloc(size_t nmemb, size_t size);
+int		ft_len_line(char *s);
 
 #endif // !GET_NEXT_LINE_H

@@ -12,6 +12,19 @@
 
 #include "get_next_line.h"
 
+int	ft_len_line(char *s)
+{
+	int		l;
+
+	l = 0;
+	while (*s != '\n' && *s != 0)
+	{
+		l++;
+		s++;
+	}
+	return (l + 1);
+}
+
 void	ft_nzero(void *s, size_t n)
 {
 	unsigned int	i;
