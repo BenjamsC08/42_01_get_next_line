@@ -6,71 +6,109 @@
 /*   By: benjamsc <benjamsc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 22:47:35 by benjamsc          #+#    #+#             */
-/*   Updated: 2024/11/22 13:45:29 by benjamsc         ###   ########.fr       */
+/*   Updated: 2024/11/24 11:11:32 by benjamsc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_dup_line(char *s, int n)
+void	get_line(t_list *storage, char **ptr_line)
 {
-	int		l_line;
-	char	*str;
-	char	*src;
-	int		nb;
-	char	c;
+	int	i;
+	int	j;
 
-	l_line = ft_len_line(s);
-	str = (char *)malloc((l_line + 1) * sizeof(char));
-	if (! str)
-		return (0);
-	nb = 0;
-	src = str;
-	while (nb != n)
+	if (storage == NULL)
+		return ;
+	alloc_size_line(ptr_line, storage);
+	if (! *ptr_line)
+		return ;
+	j = 0;
+	while (storage)
 	{
-		c = *s;
-		if (*s == '\n' || !*s)
-			nb++;
-		s++;
+		i = 0;
+		while (storage->content[i])
+		{
+			(*ptr_line)[j++] = storage->content[i];
+			if (!storage->content[i])
+				return ;
+			i++;
+		}
+		storage = storage->next;
 	}
-	(void) c;
-	while (*s != '\n')
-		*(str++) = *(s++);
-	*(str++) = *(s++);
-	*str = '\0';
-	return (src);
+	(*ptr_line)[j] = 0;
 }
 
-char	*get_line(int n, char *buff)
+void	store_line(t_list **storage, char *buff)
 {
-	char	*str;
-	int		nb;
+	int		i;
+	t_list	*new;
+	t_list	*last;
 
-	nb = 0;
-	str = ft_dup_line(buff, n);
-	return (str);
+	new = (t_list *)malloc(sizeof(t_list));
+	if (! new)
+		return ;
+	new->next = NULL;
+	new->content = (char *)malloc((BUFF_SIZE + 1) * sizeof(char));
+	if (! new->content)
+		return ;
+	i = 0;
+	while (buff[i])
+	{
+		new->content[i] = buff[i];
+		i++;
+	}
+	new->content[i] = 0;
+	if (*storage == NULL)
+	{
+		*storage = new;
+		return ;
+	}
+	last = ft_lstlast(*storage);
+	last->next = new;
 }
-//2 eme iteration buff == 0
+
+void	read_line(int fd, t_list **storage)
+{
+	char	*buff;
+	int		nb_r;
+
+	nb_r = 1;
+	while (! found_nwline(*storage) && nb_r)
+	{
+		buff = (char *)malloc((BUFF_SIZE + 1) * sizeof(char));
+		if (!buff)
+			return ;
+		nb_r = read(fd, buff, BUFF_SIZE);
+		buff[nb_r] = 0;
+		if (*storage == NULL && nb_r == 0)
+		{
+			free(buff);
+			return ;
+		}
+		store_line(storage, buff);
+		free(buff);
+		return ;
+	}
+}
+
 char	*get_next_line(int fd)
 {
-	char		*str;
-	char		*buff;
-	static int	n = 0;
+	static t_list	*storage = NULL;
+	char			*line;
 
-	buff = (char *)malloc(BUFF_SIZE, 1);
-	if (!buff)
+	line = NULL;
+	if (fd < 0 || BUFF_SIZE <= 0 )
 		return (NULL);
-	read(fd, buff, BUFF_SIZE);
-	printf("%d iteration :\n%s , fd : %d\n", n+1, buff, fd);
-	str = get_line(n, buff);
-	n++;
-	free(buff);
-	return (str);
+	read_line(fd, &storage);
+	if (storage == NULL)
+		return (NULL);
+	get_line(storage, &line);
+	return (line);
 }
 
 int	main(void)
 {
-	const char	*file_name = "test.txt";
+	const char			*file_name = "test.txt";
 	static int			fd;
 
 	fd = open(file_name, O_RDONLY);
@@ -80,7 +118,10 @@ int	main(void)
 		return (1);
 	}
 	char *str = get_next_line(fd);
-	//printf("%s",str);
+	printf("%s",str);
+	free(str);
+	str = get_next_line(fd);
+	printf("%s",str);
 	free(str);
 	str = get_next_line(fd);
 	printf("%s",str);

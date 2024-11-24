@@ -6,46 +6,57 @@
 /*   By: benjamsc <benjamsc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 14:45:28 by benjamsc          #+#    #+#             */
-/*   Updated: 2024/11/20 15:16:50 by benjamsc         ###   ########.fr       */
+/*   Updated: 2024/11/24 11:10:01 by benjamsc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	ft_len_line(char *s)
+t_list	*ft_lstlast(t_list *lst)
 {
-	int		l;
+	while (lst && lst->next)
+		lst = lst->next;
+	return (lst);
+}
 
-	l = 0;
-	while (*s != '\n' && *s != 0)
+int	found_nwline(t_list *storage)
+{
+	t_list	*curr;
+	int		i;
+
+	if (storage == NULL)
+		return (0);
+	i = 0;
+	curr = ft_lstlast(storage);
+	while (curr->content[i])
 	{
-		l++;
-		s++;
+		if (curr->content[i] == '\n')
+			return (1);
+		i++;
 	}
-	return (l + 1);
+	return (0);
 }
 
-void	ft_nzero(void *s, size_t n)
+void	alloc_size_line(char **ptr_line, t_list *storage)
 {
-	unsigned int	i;
-	char			*ptr;
+	int	i;
+	int	len;
 
-	ptr = (char *)s;
-	i = -1;
-	while (++i < n)
-		ptr[i] = -1;
-	return ;
-}
-
-void	*ft_nalloc(size_t nmemb, size_t size)
-{
-	char			*ptr;
-
-	if (size != 0 && nmemb > SIZE_MAX / size)
-		return (NULL);
-	ptr = malloc(nmemb * size);
-	if (!ptr)
-		return (NULL);
-	ft_nzero(ptr, nmemb * size);
-	return (ptr);
+	len = 0;
+	while (storage)
+	{
+		i = 0;
+		while (storage->content[i])
+		{
+			if (storage->content[i] == '\n')
+			{
+				len++;
+				break ;
+			}
+			len++;
+			i++;
+		}
+		storage = storage->next;
+	}
+	*ptr_line = (char *)malloc((i + 1) * sizeof(char));
 }
