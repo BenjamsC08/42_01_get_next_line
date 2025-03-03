@@ -1,6 +1,12 @@
-# Get_Next_Line
+<h1 align="center">ft_printf</h1>
 
-## 🇫🇷 Explication
+<p align="center">
+  <a href="#explication-fr">🇫🇷</a> | <a href="#explanation-en">🇬🇧</a>
+</p>
+
+---
+
+## <a name="explication-fr"></a>🇫🇷 Explication
 
 ### Objectif
 Le projet **get_next_line** consiste à créer une fonction capable d’extraire une ligne d’un fichier (passé en paramètre) à chaque appel.
@@ -9,7 +15,7 @@ Ce projet permet de développer une compréhension approfondie des concepts suiv
 
 ---
 
-## 🇬🇧 Explanation
+## <a name="explanation-en"></a>🇬🇧 Explanation
 
 ### Objective
 The **get_next_line** project consists of creating a function that extracts a line from a file (passed as a parameter) each time it is called.
