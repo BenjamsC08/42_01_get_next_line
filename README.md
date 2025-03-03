@@ -1,4 +1,4 @@
-<h1 align="center">ft_printf</h1>
+<h1 align="center">get_next_line</h1>
 
 <p align="center">
   <a href="#explication-fr">🇫🇷</a> | <a href="#explanation-en">🇬🇧</a>
