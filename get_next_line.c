@@ -121,3 +121,26 @@ char	*get_next_line(int fd)
 	}
 	return (line);
 }
+
+/*#include <stdio.h>*/
+/**/
+/*int main(void)*/
+/*{*/
+/*    char *str;*/
+/**/
+/*    while (1)*/
+/*    {*/
+/*        str = get_next_line(0); // Lecture depuis l'entrée standard*/
+/*        if (str == NULL)        // EOF ou erreur*/
+/*            break;*/
+/*        printf("%s", str);*/
+/*        // Si la ligne est juste un '\n', on arrête*/
+/*        if (ft_strlen(str) == 1 && str[0] == '\n')*/
+/*        {*/
+/*            free(str);*/
+/*            break;*/
+/*        }*/
+/*        free(str);*/
+/*    }*/
+/*    return (0);*/
+/*}*/
