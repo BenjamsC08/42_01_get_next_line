@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: benjamsc <benjamsc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 02:18:42 by benjamsc          #+#    #+#             */
-/*   Updated: 2024/12/13 02:19:10 by benjamsc         ###   ########.fr       */
+/*   Updated: 2024/12/20 10:41:52 by benjamsc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void	read_file(char **buffer, int fd)
 {
@@ -96,26 +96,26 @@ static void	del_line(char **buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	*buffer[1024];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, buffer, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, buffer[fd], 0) < 0)
 	{
-		if (buffer)
-			free(buffer);
-		buffer = NULL;
+		if (buffer[fd])
+			free(buffer[fd]);
+		buffer[fd] = NULL;
 		return (NULL);
 	}
-	read_file(&buffer, fd);
-	if (!buffer)
+	read_file(&buffer[fd], fd);
+	if (!buffer[fd])
 		return (NULL);
-	extract_line(&buffer, &line);
-	del_line(&buffer);
+	extract_line(&buffer[fd], &line);
+	del_line(&buffer[fd]);
 	if (line == NULL || !*line)
 	{
-		if (buffer)
-			free(buffer);
-		buffer = NULL;
+		if (buffer[fd])
+			free(buffer[fd]);
+		buffer[fd] = NULL;
 		free(line);
 		line = NULL;
 	}
